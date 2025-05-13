@@ -1,0 +1,35 @@
+name: Deploy ToDo App to EC2
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Copy files to EC2
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_KEY }}
+        source: "."
+        target: "/home/ubuntu/todo-app"
+
+    - name: Run Flask App on EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_KEY }}
+        script: |
+          cd todo-app
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          nohup python3 app.py > app.log 2>&1 &
