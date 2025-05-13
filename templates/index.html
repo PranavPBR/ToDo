@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Personal To-Do App</title>
+    <style>
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+        .entry-item {
+            margin-bottom: 10px;
+        }
+        form.inline {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to My Personal App</h1>
+
+    <form action="/add" method="POST">
+        <input type="text" name="title" placeholder="Add something..." required>
+        <button type="submit">Add</button>
+    </form>
+
+    <h2>My List:</h2>
+    <ul>
+        {% for entry in entries %}
+            <li class="entry-item">
+                <form class="inline" action="/toggle/{{ loop.index0 }}" method="POST">
+                    <input type="checkbox" onchange="this.form.submit()" {% if entry.completed %}checked{% endif %}>
+                </form>
+                <span class="{{ 'completed' if entry.completed else '' }}">
+                    {{ entry.title }}
+                </span>
+                <a href="/delete/{{ loop.index0 }}" style="color:red;">🗑️</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
