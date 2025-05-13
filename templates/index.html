@@ -2,41 +2,115 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Personal To-Do App</title>
     <style>
-        .completed {
-            text-decoration: line-through;
-            color: gray;
+        body {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 30px;
         }
-        .entry-item {
-            margin-bottom: 10px;
+        .container {
+            max-width: 600px;
+            background: #ffffff;
+            margin: auto;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
         }
         form.inline {
-            display: inline;
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            font-size: 1.5rem;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li.entry-item {
+            background: #f0f3f5;
+            padding: 12px 16px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .entry-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+        .delete-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #e74c3c;
+            font-size: 18px;
+        }
+        .delete-button:hover {
+            color: #c0392b;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to My Personal App</h1>
+<div class="container">
+    <h1>📋 My Personal To-Do App</h1>
 
-    <form action="/add" method="POST">
+    <form action="/add" method="POST" class="inline">
         <input type="text" name="title" placeholder="Add something..." required>
         <button type="submit">Add</button>
     </form>
 
-    <h2>My List:</h2>
+    <h2>📝 My List</h2>
     <ul>
         {% for entry in entries %}
             <li class="entry-item">
-                <form class="inline" action="/toggle/{{ loop.index0 }}" method="POST">
-                    <input type="checkbox" onchange="this.form.submit()" {% if entry.completed %}checked{% endif %}>
-                </form>
-                <span class="{{ 'completed' if entry.completed else '' }}">
-                    {{ entry.title }}
-                </span>
-                <a href="/delete/{{ loop.index0 }}" style="color:red;">🗑️</a>
+                <div class="entry-left">
+                    <form action="/toggle/{{ loop.index0 }}" method="POST">
+                        <input type="checkbox" onchange="this.form.submit()" {% if entry.completed %}checked{% endif %}>
+                    </form>
+                    <span class="{% if entry.completed %}completed{% endif %}">{{ entry.title }}</span>
+                </div>
+                <a href="/delete/{{ loop.index0 }}" class="delete-button">🗑️</a>
             </li>
         {% endfor %}
     </ul>
+</div>
 </body>
 </html>
